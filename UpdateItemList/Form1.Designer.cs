@@ -28,12 +28,57 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Form1";
+            txtFolder = new TextBox();
+            btnFolder = new Button();
+            grdSumItem = new DataGridView();
+            ((System.ComponentModel.ISupportInitialize)grdSumItem).BeginInit();
+            SuspendLayout();
+            // 
+            // txtFolder
+            // 
+            txtFolder.Location = new Point(12, 12);
+            txtFolder.Name = "txtFolder";
+            txtFolder.Size = new Size(526, 27);
+            txtFolder.TabIndex = 0;
+            // 
+            // btnFolder
+            // 
+            btnFolder.Location = new Point(544, 11);
+            btnFolder.Name = "btnFolder";
+            btnFolder.Size = new Size(94, 29);
+            btnFolder.TabIndex = 1;
+            btnFolder.Text = "Folder";
+            btnFolder.UseVisualStyleBackColor = true;
+            btnFolder.Click += btnFolder_Click;
+            // 
+            // grdSumItem
+            // 
+            grdSumItem.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            grdSumItem.Location = new Point(12, 73);
+            grdSumItem.Name = "grdSumItem";
+            grdSumItem.RowHeadersWidth = 51;
+            grdSumItem.Size = new Size(1289, 564);
+            grdSumItem.TabIndex = 2;
+            // 
+            // Form1
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(1329, 680);
+            Controls.Add(grdSumItem);
+            Controls.Add(btnFolder);
+            Controls.Add(txtFolder);
+            Name = "Form1";
+            Text = "Form1";
+            ((System.ComponentModel.ISupportInitialize)grdSumItem).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
+
+        private TextBox txtFolder;
+        private Button btnFolder;
+        private DataGridView grdSumItem;
     }
 }
