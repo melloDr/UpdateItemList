@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Threading.Tasks;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using UpdateItemList.Utils;
@@ -8,6 +9,8 @@ namespace UpdateItemList
     public partial class Form1 : Form
     {
         HandleDatatable handleDatatable = new HandleDatatable();
+
+        DataTable dataTable = new DataTable();
         public Form1()
         {
             InitializeComponent();
@@ -84,14 +87,9 @@ namespace UpdateItemList
 
                     if (!isEmptyRow) dataTable.Rows.Add(dataRow);
                 }
-
             }
-
             return dataTable;
         }
-
-        
-
 
         #endregion
 
@@ -114,12 +112,39 @@ namespace UpdateItemList
                                                             file.EndsWith(".xlsb", StringComparison.OrdinalIgnoreCase))
                                              .ToArray();
 
-            DataTable dataTable = new DataTable();
             for (int i = 0; i < excelFiles.Length; i++)
             {
                 dataTable = ReadExcelData(excelFiles[i], i, ref dataTable);
             }
+            int insertPosition = dataTable.Columns.Count - 1;
+            DataColumn newColumn = new DataColumn("DateDelete", typeof(string));
+            dataTable.Columns.Add(newColumn);
+            newColumn.SetOrdinal(insertPosition);
             handleDatatable.CreateOutputFile(dataTable, txtFolder.Text + "\\output");
+            handleDatatable.CopyDataTableToClipboard(dataTable);
+            MessageBox.Show("Handled! Copied to clipboard!");
+        }
+
+        private void btnWriteData_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var sheetsHelper = new GoogleSheetsHelper();
+                var service = sheetsHelper.GetSheetsService();
+
+                // ID của Google Sheet (lấy từ URL: https://docs.google.com/spreadsheets/d/{spreadsheetId}/edit)
+                string spreadsheetId = "1SpH6VvniYLMRzESNs4OD8TPEdQQAoZfTXK1YkofYv9c";
+                string sheetName = "Sheet1"; // Tên sheet cần ghi
+
+                // Gọi phương thức ghi dữ liệu
+                sheetsHelper.WriteDataTableToSheet(spreadsheetId, sheetName, dataTable);
+
+                MessageBox.Show("Dữ liệu đã được ghi thành công!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi: {ex.Message}");
+            }
 
         }
     }

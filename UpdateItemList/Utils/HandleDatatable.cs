@@ -179,6 +179,56 @@ namespace UpdateItemList.Utils
                 workbook.Close(); // Đảm bảo workbook được đóng
             }
         }
+        internal void CopyDataTableToClipboard(DataTable dataTable)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (DataRow row in dataTable.Rows)
+            {
+                for (int i = 0; i < dataTable.Columns.Count; i++)
+                {
+                    // Convert.ToString để xử lý DBNull.Value thành chuỗi rỗng
+                    //if (string.IsNullOrEmpty(row[i].ToString())) row[i] = "";
+                    string cellValue = Convert.ToString(row[i]) + "";
+                    sb.Append(EscapeAndQuoteValue(cellValue));
+                    if (i < dataTable.Columns.Count - 1)
+                    {
+                        sb.Append("\t"); // Sử dụng tab làm dấu phân cách
+                    }
+                }
+                sb.AppendLine(); // Xuống dòng sau khi ghi xong một hàng
+            }
+            try
+            {
+                Clipboard.SetText(sb.ToString());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi sao chép vào clipboard: {ex.Message}");
+            }
+        }
+        private static string EscapeAndQuoteValue(string value)
+        {
+            if (value == null)
+            {
+                return ""; // Xử lý giá trị null
+            }
+
+            // Kiểm tra xem giá trị có cần được bọc trong dấu nháy kép hay không
+            // Cần bọc nếu chứa dấu nháy kép, tab, xuống dòng, hoặc ký tự khác có thể gây nhầm lẫn (ví dụ: dấu phẩy nếu là CSV)
+            bool needsQuotes = value.Contains("\"") || value.Contains("\t") || value.Contains("\n") || value.Contains("\r");
+
+            if (needsQuotes)
+            {
+                // Escape dấu nháy kép bên trong bằng cách nhân đôi nó
+                value = value.Replace("\"", "\"\"");
+                // Bọc toàn bộ giá trị trong dấu nháy kép
+                return "\"" + value + "\"";
+            }
+            else
+            {
+                return value;
+            }
+        }
 
 
     }
