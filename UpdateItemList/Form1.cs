@@ -1,7 +1,9 @@
 ﻿using System.Data;
 using System.Threading.Tasks;
+using Google.Apis.Auth.OAuth2;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using UpdateItemList.Interface;
 using UpdateItemList.Utils;
 
 namespace UpdateItemList
@@ -125,26 +127,53 @@ namespace UpdateItemList
             MessageBox.Show("Handled! Copied to clipboard!");
         }
 
-        private void btnWriteData_Click(object sender, EventArgs e)
+        private async void btnWriteData_Click(object sender, EventArgs e)
         {
+            string a = string.Empty;
             try
             {
-                var sheetsHelper = new GoogleSheetsHelper();
-                var service = sheetsHelper.GetSheetsService();
+                string client_id = "1040164464124-mhmrgtl70icqhubokdklj291n3n2p3bg.apps.googleusercontent.com";
+                string client_secret = "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";
+
+                string[] scopes = new[] { Google.Apis.Sheets.v4.SheetsService.Scope.Spreadsheets };
+                UserCredential credential = GoogleTryConnect.Login(client_id, client_secret, scopes);
+                GoogleSheetsManager manager = new GoogleSheetsManager(credential);
+                //string spreadsheetId = "17ghQ20O-2Id6HUmLsCznftXxdPb1we1VyHv5Jfeniso"; //1y4z8xJtt0_bvfG3f_g-dlvdfApAHTxsGMCM8eCDZ-L4
+                //string spreadsheetId = "1y4z8xJtt0_bvfG3f_g-dlvdfApAHTxsGMCM8eCDZ-L4"; 
+                string spreadsheetId = "1Pi31w37XDOWb1R6C9kAEPWxv91SP5zaK";
+                string sheetName = "0"; // Tên sheet cần ghi
 
                 // ID của Google Sheet (lấy từ URL: https://docs.google.com/spreadsheets/d/{spreadsheetId}/edit)
-                string spreadsheetId = "1SpH6VvniYLMRzESNs4OD8TPEdQQAoZfTXK1YkofYv9c";
-                string sheetName = "Sheet1"; // Tên sheet cần ghi
 
                 // Gọi phương thức ghi dữ liệu
-                sheetsHelper.WriteDataTableToSheet(spreadsheetId, sheetName, dataTable);
+                //var newSheet = manager.CreateNew("Test document titled");
+                var sheet = manager.WriteData(spreadsheetId, sheetName, dataTable);
 
-                MessageBox.Show("Dữ liệu đã được ghi thành công!");
+                txtErr.Text += Environment.NewLine + ("SpreadsheetId: " + sheet.SpreadsheetId);
+                txtErr.Text += Environment.NewLine + ("SpreadsheetUrl: " + sheet.SpreadsheetUrl);
+                // MessageBox.Show("Dữ liệu đã được ghi thành công!");
             }
             catch (Exception ex)
             {
+                txtErr.Text = a;
                 MessageBox.Show($"Lỗi: {ex.Message}");
             }
+
+        }
+
+        private void btnCreateSheet_Click(object sender, EventArgs e)
+        {
+            string client_id = "1040164464124-mhmrgtl70icqhubokdklj291n3n2p3bg.apps.googleusercontent.com";
+            string client_secret = "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";
+
+            string[] scopes = new[] { Google.Apis.Sheets.v4.SheetsService.Scope.Spreadsheets };
+
+            UserCredential credential = GoogleTryConnect.Login(client_id, client_secret, scopes);
+            GoogleSheetsManager manager = new GoogleSheetsManager(credential);
+
+            var newSheet = manager.CreateNew("Test document titled");
+            txtErr.Text += Environment.NewLine + ("SpreadsheetId: " + newSheet.SpreadsheetId);
+            txtErr.Text += Environment.NewLine + ("SpreadsheetUrl: " + newSheet.SpreadsheetUrl);
 
         }
     }

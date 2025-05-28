@@ -34,6 +34,8 @@ namespace UpdateItemList
             btnFolder = new Button();
             grdSumItem = new DataGridView();
             btnWriteData = new Button();
+            txtErr = new TextBox();
+            btnCreateSheet = new Button();
             ((System.ComponentModel.ISupportInitialize)grdSumItem).BeginInit();
             SuspendLayout();
             // 
@@ -73,11 +75,31 @@ namespace UpdateItemList
             btnWriteData.UseVisualStyleBackColor = true;
             btnWriteData.Click += btnWriteData_Click;
             // 
+            // txtErr
+            // 
+            txtErr.Location = new Point(274, 130);
+            txtErr.Multiline = true;
+            txtErr.Name = "txtErr";
+            txtErr.Size = new Size(616, 357);
+            txtErr.TabIndex = 4;
+            // 
+            // btnCreateSheet
+            // 
+            btnCreateSheet.Location = new Point(212, 45);
+            btnCreateSheet.Name = "btnCreateSheet";
+            btnCreateSheet.Size = new Size(112, 29);
+            btnCreateSheet.TabIndex = 5;
+            btnCreateSheet.Text = "Create Sheet";
+            btnCreateSheet.UseVisualStyleBackColor = true;
+            btnCreateSheet.Click += btnCreateSheet_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(713, 272);
+            ClientSize = new Size(958, 530);
+            Controls.Add(btnCreateSheet);
+            Controls.Add(txtErr);
             Controls.Add(btnWriteData);
             Controls.Add(grdSumItem);
             Controls.Add(btnFolder);
@@ -95,5 +117,7 @@ namespace UpdateItemList
         private Button btnFolder;
         private DataGridView grdSumItem;
         private Button btnWriteData;
+        private TextBox txtErr;
+        private Button btnCreateSheet;
     }
 }
