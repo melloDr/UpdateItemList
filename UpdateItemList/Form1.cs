@@ -25,6 +25,7 @@ namespace UpdateItemList
 
             using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
+                string fileName = Path.GetFileNameWithoutExtension(filePath);
                 XSSFWorkbook workbook = new XSSFWorkbook(fileStream);
                 ISheet sheet = workbook.GetSheetAt(0); // Lấy sheet đầu tiên
 
@@ -56,6 +57,11 @@ namespace UpdateItemList
                     {
                         string header = headerRow.GetCell(col)?.ToString() ?? $"Column{col}";
                         dataTable.Columns.Add(header.Trim());
+                        if(header.Equals("Date Created"))
+                        {
+                            DataColumn newColumn = new DataColumn("Date Apply Live", typeof(string));
+                            dataTable.Columns.Add(newColumn);
+                        }
                     }
                 }
 
@@ -79,6 +85,11 @@ namespace UpdateItemList
                         {
                             dataRow[col - startCol] = DateTime.FromOADate(oaDate).ToString("dd/MM/yyyy");
                             isEmptyRow = false;
+                        }
+                        else if (dataTable.Columns[col - startCol].ColumnName.Equals("Date Apply Live"))
+                        {
+                            dataRow[col - startCol] = DateTime.ParseExact(fileName.Substring(0,8),"ddMMyyyy", null)
+                                                              .ToString("dd/MM/yyyy");
                         }
                         else
                         {
